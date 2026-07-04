@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AssistIA — L'assistant IA pour votre commerce</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080808;
+      --surface: #111111;
+      --surface2: #1a1a1a;
+      --border: #222222;
+      --accent: #2563EB;
+      --accent-glow: rgba(37, 99, 235, 0.18);
+      --accent-light: #60A5FA;
+      --text: #F0F0F0;
+      --muted: #777777;
+      --success: #22c55e;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 32px;
+      background: rgba(8,8,8,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-cta {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(37,99,235,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--accent-light);
+      margin-bottom: 32px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.4rem, 7vw, 4.8rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      max-width: 780px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent-light);
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      color: var(--muted);
+      max-width: 500px;
+      margin-bottom: 48px;
+      font-weight: 400;
+      line-height: 1.7;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 16px 32px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 0 32px rgba(37,99,235,0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 48px rgba(37,99,235,0.45);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 16px 32px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s;
+    }
+
+    .btn-secondary:hover { border-color: #444; }
+
+    /* STATS */
+    .stats {
+      display: flex;
+      gap: 0;
+      justify-content: center;
+      margin-top: 72px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      max-width: 560px;
+      width: 100%;
+    }
+
+    .stat {
+      flex: 1;
+      padding: 24px 20px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent-light);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* SECTION */
+    section {
+      padding: 96px 24px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 500px;
+      margin-bottom: 48px;
+    }
+
+    /* DEMO WIDGET */
+    .demo-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(37,99,235,0.1);
+    }
+
+    .demo-topbar {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .demo-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .demo-dots span {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .demo-dots span:first-child { background: #ff5f57; }
+    .demo-dots span:nth-child(2) { background: #febc2e; }
+    .demo-dots span:nth-child(3) { background: #28c840; }
+
+    .demo-title-bar {
+      flex: 1;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .demo-body {
+      display: flex;
+      flex-direction: column;
+      height: 420px;
+    }
+
+    .demo-sector-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 16px 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .msg {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      animation: fadeUp 0.3s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg.user { flex-direction: row-reverse; }
+
+    .msg-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .msg.bot .msg-avatar { background: var(--accent); }
+    .msg.user .msg-avatar { background: var(--surface2); border: 1px solid var(--border); }
+
+    .msg-bubble {
+      max-width: 75%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .msg.bot .msg-bubble {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-top-left-radius: 4px;
+    }
+
+    .msg.user .msg-bubble {
+      background: var(--accent);
+      color: #fff;
+      border-top-right-radius: 4px;
+    }
+
+    .typing-indicator {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 0 20px 8px;
+    }
+
+    .typing-indicator.visible { display: flex; }
+
+    .typing-dots {
+      display: flex;
+      gap: 4px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 14px;
+      border-top-left-radius: 4px;
+    }
+
+    .typing-dots span {
+      width: 6px; height: 6px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-6px); }
+    }
+
+    .demo-input-area {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      background: var(--surface);
+    }
+
+    .demo-input {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .demo-input:focus { border-color: var(--accent); }
+    .demo-input::placeholder { color: var(--muted); }
+
+    .demo-send {
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      flex-shrink: 0;
+    }
+
+    .demo-send:hover { opacity: 0.85; }
+    .demo-send svg { width: 18px; height: 18px; fill: #fff; }
+
+    /* FEATURES */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 24px;
+      transition: border-color 0.2s;
+    }
+
+    .feature-card:hover { border-color: #333; }
+
+    .feature-icon {
+      font-size: 1.6rem;
+      margin-bottom: 14px;
+    }
+
+    .feature-title {
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .feature-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* PRICING */
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: 18px;
+      padding: 48px 40px;
+      text-align: center;
+      max-width: 480px;
+      margin: 0 auto;
+      box-shadow: 0 0 60px rgba(37,99,235,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing-card::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: 50%;
+      transform: translateX(-50%);
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(37,99,235,0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .pricing-badge {
+      display: inline-block;
+      background: var(--accent-glow);
+      color: var(--accent-light);
+      border: 1px solid rgba(37,99,235,0.3);
+      border-radius: 100px;
+      padding: 4px 14px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .pricing-price {
+      font-family: 'Syne', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .pricing-price sup {
+      font-size: 1.5rem;
+      vertical-align: super;
+    }
+
+    .pricing-period {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+
+    .pricing-features {
+      list-style: none;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .pricing-features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+    }
+
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--success);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .pricing-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 16px;
+    }
+
+    /* CTA SECTION */
+    .cta-section {
+      text-align: center;
+      padding: 96px 24px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    /* DIVIDER */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .hero { padding: 100px 20px 60px; }
+      .stats { flex-direction: column; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat:last-child { border-bottom: none; }
+      .pricing-card { padding: 36px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Assist<span>IA</span></div>
+  <a href="https://wa.me/33670668969?text=Bonjour%2C%20je%20veux%20une%20d%C3%A9mo%20gratuite%20!" class="nav-cta">Démo gratuite →</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Assistant IA · Commerce local</div>
+  <h1>Votre commerce répond,<br/><em>même quand vous êtes occupé</em></h1>
+  <p class="hero-sub">Un assistant IA qui répond à vos clients 24h/24, réserve des rendez-vous et ne rate plus jamais un appel — installé en 48h.</p>
+  <div class="hero-buttons">
+    <a href="#demo" class="btn-primary">▶ Voir la démo en direct</a>
+    <a href="https://wa.me/33670668969?text=Bonjour%2C%20je%20veux%20une%20d%C3%A9mo%20gratuite%20!" class="btn-secondary">Nous contacter</a>
+  </div>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">48h</div>
+      <div class="stat-label">Installation</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label">Disponible</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">0€</div>
+      <div class="stat-label">Démo gratuite</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider" />
+
+<!-- DEMO -->
+<section id="demo">
+  <div class="section-label">Démo live</div>
+  <h2 class="section-title">Testez l'assistant maintenant</h2>
+  <p class="section-sub">Choisissez un secteur et posez n'importe quelle question — c'est exactement ce que verront vos clients.</p>
+
+  <div class="demo-wrap">
+    <div class="demo-topbar">
+      <div class="demo-dots"><span></span><span></span><span></span></div>
+      <div class="demo-title-bar" id="demo-bar-title">💇 Salon de coiffure — Assistant IA</div>
+    </div>
+    <div class="demo-body">
+      <div class="demo-sector-tabs">
+        <button class="tab-btn active" onclick="setSector('coiffeur', this)">💇 Coiffeur</button>
+        <button class="tab-btn" onclick="setSector('restaurant', this)">🍽️ Restaurant</button>
+        <button class="tab-btn" onclick="setSector('artisan', this)">🔧 Artisan</button>
+      </div>
+      <div class="messages" id="messages"></div>
+      <div class="typing-indicator" id="typing">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+      </div>
+      <div class="demo-input-area">
+        <input class="demo-input" id="demo-input" type="text" placeholder="Posez une question à l'assistant..." onkeydown="if(event.key==='Enter') sendMsg()" />
+        <button class="demo-send" onclick="sendMsg()">
+          <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- FEATURES -->
+<section>
+  <div class="section-label">Ce qui est inclus</div>
+  <h2 class="section-title">Tout ce dont votre commerce a besoin</h2>
+  <p class="section-sub">Pas de technique compliquée. On s'occupe de tout.</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📞</div>
+      <div class="feature-title">Zéro appel raté</div>
+      <div class="feature-desc">L'assistant répond à vos clients même pendant vos heures de pointe, le soir ou le week-end.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📅</div>
+      <div class="feature-title">Prise de RDV automatique</div>
+      <div class="feature-desc">Vos clients réservent directement via l'assistant. Votre agenda se remplit tout seul.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Installation en 48h</div>
+      <div class="feature-desc">On configure tout selon votre commerce : horaires, services, tarifs, FAQ — en 48h c'est en ligne.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <div class="feature-title">Sur mesure</div>
+      <div class="feature-desc">L'assistant connaît votre commerce par cœur : vos services, vos prix, vos disponibilités.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- PRICING -->
+<section>
+  <div class="section-label">Tarifs</div>
+  <h2 class="section-title" style="text-align:center">Simple et sans surprise</h2>
+  <p class="section-sub" style="margin: 0 auto 48px; text-align:center">Un seul forfait, tout inclus.</p>
+  <div class="pricing-card">
+    <div class="pricing-badge">Forfait Commerce</div>
+    <div class="pricing-price"><sup>€</sup>599</div>
+    <div class="pricing-period">installation unique + 79€/mois</div>
+    <ul class="pricing-features">
+      <li>Assistant IA personnalisé à votre commerce</li>
+      <li>Intégration sur votre site ou Google</li>
+      <li>Prise de rendez-vous automatisée</li>
+      <li>Disponible 24h/24, 7j/7</li>
+      <li>Support et mises à jour inclus</li>
+      <li>Installation complète en 48h</li>
+    </ul>
+    <a href="https://wa.me/33670668969?text=Bonjour%2C%20je%20veux%20une%20d%C3%A9mo%20gratuite%20!" class="btn-primary" style="width:100%;justify-content:center">Démarrer — Démo gratuite</a>
+    <p class="pricing-note">Aucun engagement. Démo 100% gratuite et sans obligation.</p>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<div class="cta-section">
+  <div class="section-label">Bordeaux & alentours</div>
+  <h2 class="section-title">Prêt à ne plus rater un seul client ?</h2>
+  <p class="section-sub" style="margin: 0 auto 36px;">On vous montre la démo en 10 minutes, sur WhatsApp ou par appel. Gratuit, sans engagement.</p>
+  <a href="https://wa.me/33670668969?text=Bonjour%2C%20je%20veux%20une%20d%C3%A9mo%20gratuite%20!" class="btn-primary" style="font-size:1.1rem; padding: 18px 40px;">
+    💬 Démo gratuite sur WhatsApp
+  </a>
+</div>
+
+<footer>
+  <strong style="font-family:'Syne',sans-serif;">Assist<span style="color:var(--accent)">IA</span></strong> · Bordeaux &amp; alentours · 2025
+</footer>
+
+<script>
+  const sectors = {
+    coiffeur: {
+      label: "💇 Salon de coiffure — Assistant IA",
+      welcome: "Bonjour ! Je suis l assistant du salon. Je peux vous informer sur nos services, nos tarifs et prendre rendez-vous pour vous. Comment puis-je vous aider ?"
+    },
+    restaurant: {
+      label: "🍽️ Restaurant — Assistant IA",
+      welcome: "Bonsoir ! Je suis l assistant du restaurant. Je peux vous donner nos horaires, notre menu ou reserver une table pour vous. Que puis-je faire pour vous ?"
+    },
+    artisan: {
+      label: "🔧 Artisan — Assistant IA",
+      welcome: "Bonjour ! Je suis l assistant de l entreprise. Je peux vous renseigner sur nos services et planifier une intervention. Comment puis-je vous aider ?"
+    }
+  };
+
+  const reponsesCoiffeur = [
+    { keys: ["bonjour","salut","hello","bonsoir","coucou"], reply: "Bonjour ! Ravi de vous accueillir. Je peux vous renseigner sur nos prestations, nos tarifs ou prendre rendez-vous pour vous. Comment puis-je vous aider ?" },
+    { keys: ["adresse","situe","trouve","localisation","venir","emplacement","plan","maps","gps","ou est","chemin"], reply: "Nous sommes au 24 rue Fondaudege, 33000 Bordeaux. Le Parking Tourny est a 2 min a pied. Accessible en tram : arret Gambetta (ligne B). Des questions ?" },
+    { keys: ["telephone","tel","numero","appeler","contact","joindre"], reply: "Vous pouvez nous joindre au 05 56 44 12 37. Du mardi au samedi de 9h a 19h. Vous pouvez aussi reserver directement ici si vous preferez !" },
+    { keys: ["parking","garer","voiture","stationnement"], reply: "Le plus pratique est le Parking Tourny (allee de Tourny), a 2 min a pied du salon. Vous pouvez aussi venir en tram : arret Gambetta (ligne B) !" },
+    { keys: ["service","services","prestation","prestations","proposez","offrez","faites","proposer","quoi","offre","avez"], reply: "Voici nos prestations : Coupe homme 20 euros - Coupe femme 35 euros - Coloration 60 a 90 euros - Balayage 80 a 120 euros - Meches des 70 euros - Soin capillaire 25 euros. Vous souhaitez reserver ?" },
+    { keys: ["prix","tarif","tarifs","cout","combien","cher"], reply: "Nos tarifs : Coupe homme 20 euros - Coupe femme 35 euros - Coloration 60-90 euros - Balayage 80-120 euros - Soin capillaire 25 euros. Des questions sur une prestation ?" },
+    { keys: ["rdv","rendez-vous","reserver","réserver","reservation","réservation","dispo","disponible","place","creneau","créneau","prendre","avoir un rdv","réserve","reserve"], reply: "Bien sur ! Quel jour vous conviendrait le mieux, et a quelle heure souhaitez-vous venir ? On est ouverts du mardi au samedi de 9h a 19h." },
+    { keys: ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche","demain","semaine"], reply: "Parfait ! A quelle heure souhaitez-vous venir ? On est ouverts de 9h a 19h, du mardi au samedi." },
+    { keys: ["heure","horaire","horaires","ouvert","ouvre","ferme","fermeture","ouverture"], reply: "Le salon est ouvert du mardi au samedi, de 9h a 19h. Nous sommes fermes le dimanche et le lundi. Souhaitez-vous reserver un creneau ?" },
+    { keys: ["h30","h00","h15","h45","9h","10h","11h","12h","13h","14h","15h","16h","17h","18h","19h"], reply: "Parfait ! Je note ca. Pour confirmer votre creneau, pouvez-vous me donner le jour souhaite ? On est ouverts du mardi au samedi." },
+    { keys: ["coloration","couleur","teinture","balayage","meche","highlights"], reply: "On propose colorations completes (60-90 euros), balayages (80-120 euros) et meches (a partir de 70 euros). Duree 1h30 a 2h. Voulez-vous un creneau ?" },
+    { keys: ["coupe","couper","cheveux","coiffure"], reply: "Coupe homme a 20 euros et coupe femme a 35 euros, duree environ 45min. Souhaitez-vous prendre rendez-vous ?" }
+  ];
+
+  const reponsesResto = [
+    { keys: ["bonjour","salut","hello","bonsoir","coucou"], reply: "Bonsoir ! Bienvenue. Je peux vous renseigner sur notre carte, nos horaires ou reserver une table. Que puis-je faire pour vous ?" },
+    { keys: ["menu","carte","plat","manger","specialite"], reply: "Menu du midi a 18 euros (entree+plat ou plat+dessert). Le soir, menu 3 services a 35 euros. Nos specialites : entrecote bordelaise, magret de canard, tiramisu maison." },
+    { keys: ["adresse","situe","trouve","localisation","venir","ou est","chemin","maps","gps"], reply: "Nous sommes au 8 rue du Parlement Sainte-Catherine, 33000 Bordeaux. Proche du tram arrêt Sainte-Catherine (ligne C). Parking Saint-Projet a 3 min a pied !" },
+    { keys: ["reserver","réserver","table","reservation","réservation","place","couverts","créneau","creneau","réserve","reserve"], reply: "Avec plaisir ! Pour quelle date et combien de personnes ? Nous recommandons de reserver a l avance, surtout le week-end." },
+    { keys: ["heure","horaire","ouvert","ferme","service"], reply: "Ouvert le midi de 12h a 14h30 et le soir de 19h a 22h30. Fermes dimanche soir et lundi. On vous attend !" },
+    { keys: ["vegetarien","vegan","allergie","sans gluten"], reply: "Oui, nous proposons des options vegetariennes et pouvons adapter selon les allergies. Precisez-le lors de la reservation." },
+    { keys: ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche","demain"], reply: "Bien sur ! Pour quelle date et a quelle heure souhaitez-vous reserver ? Et pour combien de personnes ?" }
+  ];
+
+  const reponsesArtisan = [
+    { keys: ["bonjour","salut","hello","bonsoir","coucou"], reply: "Bonjour ! Je suis l assistant de l entreprise. Je peux vous renseigner sur nos services, etablir un devis ou planifier une intervention. Comment puis-je vous aider ?" },
+    { keys: ["adresse","situe","trouve","localisation","venir","ou est","chemin","maps","gps","situez","situee"], reply: "Nous intervenons directement chez vous sur toute la metropole bordelaise. Pas besoin de vous deplacer ! Donnez-moi votre adresse et je planifie une intervention." },
+    { keys: ["prix","tarif","devis","combien","cout"], reply: "Le devis est gratuit et etabli sous 24h. Le tarif depend de la prestation. Pouvez-vous me decrire votre besoin en quelques mots ?" },
+    { keys: ["urgent","urgence","fuite","panne","rapidement","vite"], reply: "On intervient en urgence 7j/7 sur Bordeaux metropole. Donnez-moi votre adresse et disponibilites, on vous envoie quelqu un des que possible." },
+    { keys: ["zone","secteur","bordeaux","deplace"], reply: "On intervient sur toute la metropole bordelaise : Bordeaux, Merignac, Pessac, Talence, Begles et alentours. Vous etes dans quelle ville ?" },
+    { keys: ["rdv","rendez-vous","intervention","passage","disponible"], reply: "On peut planifier une intervention rapidement. Quelle est votre disponibilite cette semaine ? Matin ou apres-midi ?" }
+  ];
+
+  function getReply(text, sector) {
+    var lower = text.toLowerCase();
+    var jours = ["lundi","mardi","mercredi","jeudi","vendredi","samedi","dimanche","demain"];
+    var heureMatch = lower.match(/\b(\d{1,2})h(\d{0,2})\b/i);
+    var jourTrouve = null;
+    for (var j = 0; j < jours.length; j++) {
+      if (lower.indexOf(jours[j]) !== -1) { jourTrouve = jours[j]; break; }
+    }
+    var nombrePersonnes = lower.match(/\b(\d+)\s*(personne|personnes|pers|pax|convive|couvert)/i);
+
+    // Mettre à jour la mémoire avec ce qu'on trouve dans ce message
+    if (jourTrouve) rdvMemoire.jour = jourTrouve;
+    if (heureMatch) rdvMemoire.heure = heureMatch[0];
+    if (nombrePersonnes) rdvMemoire.personnes = nombrePersonnes[1];
+
+    // Détecter matin/après-midi pour artisan
+    var momentJour = null;
+    if (lower.indexOf("matin") !== -1) momentJour = "matin";
+    if (lower.indexOf("apres-midi") !== -1 || lower.indexOf("après-midi") !== -1 || lower.indexOf("aprem") !== -1) momentJour = "apres-midi";
+    if (momentJour && !rdvMemoire.heure) rdvMemoire.heure = momentJour;
+
+    // Si on a jour + heure/moment en mémoire → confirmation et reset
+    if (rdvMemoire.jour && rdvMemoire.heure) {
+      var jour = rdvMemoire.jour;
+      var heure = rdvMemoire.heure;
+      var nb = rdvMemoire.personnes;
+      rdvMemoire = { jour: null, heure: null, personnes: null };
+      if (sector === "coiffeur") {
+        return "Parfait ! Votre rendez-vous est note pour " + jour + " a " + heure + ". Vous recevrez une confirmation rapidement. A bientot au salon !";
+      }
+      if (sector === "restaurant") {
+        return "Parfait ! Votre reservation est notee pour " + jour + " a " + heure + (nb ? " pour " + nb + " personnes" : "") + ". Vous recevrez une confirmation rapidement. A bientot !";
+      }
+      if (sector === "artisan") {
+        return "Parfait ! Votre intervention est planifiee pour " + jour + " " + heure + ". Un technicien vous contactera pour confirmer. Merci de votre confiance !";
+      }
+    }
+
+    // On a le jour mais pas encore l'heure → demander l'heure
+    if (rdvMemoire.jour && !rdvMemoire.heure) {
+      if (sector === "coiffeur") return "Parfait pour " + rdvMemoire.jour + " ! A quelle heure souhaitez-vous venir ? On est ouverts de 9h a 19h.";
+      if (sector === "restaurant") {
+        var nbStr = rdvMemoire.personnes ? " pour " + rdvMemoire.personnes + " personnes" : "";
+        return "Parfait pour " + rdvMemoire.jour + nbStr + " ! A quelle heure souhaitez-vous venir ? On est ouverts de 12h a 14h30 le midi et 19h a 22h30 le soir.";
+      }
+      if (sector === "artisan") return "Parfait pour " + rdvMemoire.jour + " ! Plutot matin ou apres-midi ?";
+    }
+
+    // On a l'heure/moment mais pas encore le jour → demander le jour
+    if (rdvMemoire.heure && !rdvMemoire.jour) {
+      if (sector === "coiffeur") return "Note pour " + rdvMemoire.heure + " ! Quel jour vous conviendrait ? On est ouverts du mardi au samedi.";
+      if (sector === "restaurant") return "Note pour " + rdvMemoire.heure + " ! Quel jour souhaitez-vous venir ?";
+      if (sector === "artisan") return "Parfait pour le " + rdvMemoire.heure + " ! Quel jour cette semaine vous convient ?";
+    }
+
+    var reponses = sector === "coiffeur" ? reponsesCoiffeur : sector === "restaurant" ? reponsesResto : reponsesArtisan;
+    for (var i = 0; i < reponses.length; i++) {
+      var r = reponses[i];
+      for (var k = 0; k < r.keys.length; k++) {
+        if (lower.indexOf(r.keys[k]) !== -1) {
+          return r.reply;
+        }
+      }
+    }
+    var defaults = {
+      coiffeur: "Bonne question ! Vous pouvez nous appeler au 05 56 44 12 37 ou je peux vous reserver un creneau. Qu est-ce qui vous ferait plaisir ?",
+      restaurant: "Je vais verifier ca pour vous ! Puis-je vous proposer de reserver une table ou vous donner plus d infos sur notre carte ?",
+      artisan: "Je comprends votre demande. Pouvez-vous me decrire la situation en quelques mots ? Je vous aide rapidement."
+    };
+    return defaults[sector];
+  }
+
+  var currentSector = "coiffeur";
+  var messagesList = [];
+  var rdvMemoire = { jour: null, heure: null, personnes: null };
+
+  function setSector(sector, btn) {
+    currentSector = sector;
+    var btns = document.querySelectorAll(".tab-btn");
+    for (var i = 0; i < btns.length; i++) btns[i].classList.remove("active");
+    btn.classList.add("active");
+    document.getElementById("demo-bar-title").textContent = sectors[sector].label;
+    var msgs = document.getElementById("messages");
+    msgs.innerHTML = "";
+    rdvMemoire = { jour: null, heure: null, personnes: null };
+    addMessage("bot", sectors[sector].welcome);
+  }
+
+  function addMessage(role, text) {
+    var msgs = document.getElementById("messages");
+    var div = document.createElement("div");
+    div.className = "msg " + role;
+    div.innerHTML = "<div class=\"msg-avatar\">" + (role === "bot" ? "🤖" : "👤") + "</div><div class=\"msg-bubble\">" + text + "</div>";
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function sendMsg() {
+    var input = document.getElementById("demo-input");
+    var text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    addMessage("user", text);
+    var typing = document.getElementById("typing");
+    typing.classList.add("visible");
+    setTimeout(function() {
+      typing.classList.remove("visible");
+      addMessage("bot", getReply(text, currentSector));
+    }, 900 + Math.floor(Math.random() * 700));
+  }
+
+  // Init
+  addMessage("bot", sectors[currentSector].welcome);
+</script>
+</body>
+</html>
